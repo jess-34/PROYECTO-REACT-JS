@@ -1,59 +1,67 @@
-import { useForm } from "react-hook-form";
-import { NavLink, useNavigate } from "react-router-dom";
-import Contexto from "../context/Contexto";
-import { useContext } from "react";
-import Swal from "sweetalert2";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { iniciarSesion } from "../auth";
 
-const Login = () => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const { login } = useContext(Contexto);
-    const navegacion = useNavigate();
+function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-    const validacion = {
-        usuario: {
-            required: "El campo usuario es requerido!"
-        },
-        password: {
-            required: "El campo contraseña es requerido!"
-        }
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const resultado = iniciarSesion(email, password);
 
-    const onSubmit = (data) => {
-        login({ usuario: data.usuario });
-        Swal.fire({
-            icon: "success",
-            title: "Acceso correcto!",
-            text: "Estas siendo redirigido ... "
-        });
-        navegacion("/", { replace: true });
-    };
+    if (!resultado.ok) {
+      setError(resultado.error);
+      return;
+    }
 
-    return (
-        <div className="container mt-4">
-            <form onSubmit={handleSubmit(onSubmit)} className="row justify-content-center">
-                <div className="col-md-5">
-                    {errors.usuario && <p>{errors.usuario.message}</p>}
-                    <label htmlFor="usuario">usuario</label>
-                    <input
-                        {...register("usuario", validacion.usuario)}
-                        type="text"
-                        className="form-control mb-3"
-                        placeholder="usuario"
-                    />
-                    {errors.password && <p>{errors.password.message}</p>}
-                    <label htmlFor="password">password</label>
-                    <input
-                        {...register("password", validacion.password)}
-                        type="password"
-                        className="form-control mb-3"
-                        placeholder="password"
-                    />
-                    <button type="submit" className="btn btn-primary mb-3 w-100">Iniciar Sesion</button>
-                    <NavLink to="/registro" className="btn btn-primary mb-3 w-100">Registrarse</NavLink>
-                </div>
-            </form>
+    navigate("/personajes");
+  };
+
+  return (
+    <div className="auth-card">
+      <h1>Iniciar sesión</h1>
+      <p className="subtitle">Qué bueno verte de nuevo</p>
+
+      {error && <p className="auth-error" role="alert">{error}</p>}
+
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <div className="field">
+          <label htmlFor="email">Correo</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="correo@ejemplo.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </div>
-    );
-};
+
+        <div className="field">
+          <label htmlFor="password">Contraseña</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+
+        <button className="btn" type="submit">
+          Entrar
+        </button>
+      </form>
+
+      <p className="auth-footer">
+        ¿No tienes cuenta? <Link to="/registro">Regístrate</Link>
+      </p>
+    </div>
+  );
+}
 
 export default Login;

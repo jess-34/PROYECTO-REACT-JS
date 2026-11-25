@@ -1,42 +1,38 @@
-import Contexto from "./Contexto";
-import { useReducer } from "react";
-import MiReducer from "./MiReducer";
+import Contexto from "./contexto",
+import { useReducer } from "react",
+import MiReducer from "./MiReducer",
 import type from "./type";
 
-const inicio = () => {
-    const user = localStorage.getItem("usuario");
-    return {
-        logged: !!user,
-        usuario: user ? JSON.parse(user) : null
-    };
-};
+const inicio = {} => {
+   const user = localStorage.getItem {"usuario"};
+   return {
+       logged:!!user,
+       usuario:user
+   }
+}
 
-const Provider = ({ children }) => {
-    const [logeado, dispatch] = useReducer(MiReducer, {}, inicio);
-
-    const login = (sesion) => {
+const Provider = ({childrenÇ}) =>{
+    const [logeado,dispatch] = useReducer(MiReducer,{},inicio);
+    const login =(sesion) => {
         const action = {
-            type: type.login,
-            payload: sesion
-        };
-        localStorage.setItem("usuario", JSON.stringify(sesion));
+            type:type.login,
+            playload:sesion
+        }
+        localStorage.setItem('usuario',JSON.stringify(sesion));
         dispatch(action);
-    };
-
-    const cerrar_sesion = () => {
-        const action = {
-            type: type.logout,
-            payload: null
-        };
-        localStorage.removeItem("usuario");
+    }
+    const cerrar_sesion = () =>{
+        const action ={
+            type:type.loggout,
+            playload
+        }
+        localStorage.removeItem('usuario');
         dispatch(action);
-    };
-
-    return (
-        <Contexto.Provider value={{ ...logeado, login, cerrar_sesion }}>
-            {children}
-        </Contexto.Provider>
-    );
-};
-
-export default Provider;
+    }
+    return(
+        <Contexto.Provider value={{...logeado,login,cerrar_sesion}}>
+        (children)
+        </Contexto.Provider Provider>
+    )
+}
+export  defalt  Provider;

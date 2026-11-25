@@ -1,24 +1,38 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { obtenerSesion } from "./auth";
+import Home from "./pages/home";
+import Login from "./pages/login";
 import Registro from "./pages/registro";
-import Error from "./pages/Error";
-import Usuario from "./pages/Usuario";
-import RutasPrivadas from "./routes/RutasPrivadas";
-import RutasPublicas from "./routes/RutasPublicas";
+import Error from "./pages/error";
+import Dashboard from "./pages/dashboard";
+import Personajes from "./pages/personajes";
+import "./App.css";
 
-const App = () => {
+function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<RutasPrivadas><Home /></RutasPrivadas>} />
-        <Route path="/login" element={<RutasPublicas><Login /></RutasPublicas>} />
-        <Route path="/registro" element={<RutasPublicas><Registro /></RutasPublicas>} />
-        <Route path="/usuario/:nombre" element={<RutasPrivadas><Usuario /></RutasPrivadas>} />
-        <Route path="*" element={<Error />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/registro" element={<Registro />} />
+      <Route
+        path="/dashboard"
+        element={
+          obtenerSesion() ? <Dashboard /> : <Navigate to="/login" replace />
+        }
+      />
+      <Route
+        path="/personajes"
+        element={
+          obtenerSesion() ? (
+            <Personajes />
+          ) : (
+            <Navigate to="/login" replace />
+          )
+        }
+      />
+      <Route path="*" element={<Error />} />
+    </Routes>
   );
-};
+}
 
 export default App;
